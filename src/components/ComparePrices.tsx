@@ -1,9 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Star, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useGetPeptidesQuery } from "../store/features/peptideSlice";
 import { useGetVendorItemsQuery } from "../store/features/vendorSlice";
 import IconMaker from "../helpers/iconMaker";
+import DosageTabs from "./DosageTabs";
+import {
+  filterRowsByDosage,
+  getBestValueVendorId,
+  sortVendorRows,
+  type DosageMg,
+} from "../helpers/compareUtils";
 import {
   PaymentMethodIcons,
   vendorInStock,
@@ -11,7 +18,6 @@ import {
 
 const money = (n: number) => `$${n.toFixed(2)}`;
 
-// How long each peptide stays featured before rotating, and the fade duration
 const ROTATE_MS = 15000;
 const FADE_MS = 300;
 
@@ -37,9 +43,8 @@ export default function ComparePrices() {
   const [index, setIndex] = useState(0);
   const [visible, setVisible] = useState(true);
   const [secondsLeft, setSecondsLeft] = useState(ROTATE_MS / 1000);
+  const [selectedDosage, setSelectedDosage] = useState<DosageMg>(10);
 
-  // Single per-second timer drives BOTH the countdown and the rotation,
-  // so the displayed seconds and the actual peptide change stay in sync.
   useEffect(() => {
     let remaining = ROTATE_MS / 1000;
     const tick = setInterval(() => {
@@ -59,11 +64,13 @@ export default function ComparePrices() {
     }, 1000);
     return () => clearInterval(tick);
   }, [peptides]);
-  console.log(index);
-  const featured = peptides?.[index];
-  console.log(featured);
 
-  const visitTo = `/compare?q=${encodeURIComponent(featured?.name!)}`;
+  useEffect(() => {
+    setSelectedDosage(10);
+  }, [index]);
+
+  const featured = peptides?.[index];
+  const visitTo = `/compare?q=${encodeURIComponent(featured?.name ?? "")}`;
 
   const { data: vendorsData } = useGetVendorItemsQuery(
     {
@@ -71,12 +78,17 @@ export default function ComparePrices() {
     },
     { skip: !featured?._id },
   );
-  const vendors = vendorsData?.data;
+
+  const rows = useMemo(() => {
+    const filtered = filterRowsByDosage(vendorsData?.data ?? [], selectedDosage);
+    return sortVendorRows(filtered, "priceMg");
+  }, [vendorsData?.data, selectedDosage]);
+
+  const bestValueId = getBestValueVendorId(rows);
 
   return (
     <section className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
       <div className="rounded-2xl border border-slate-100 bg-white p-4 shadow-card sm:p-6">
-        {/* Header */}
         <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-[15px] font-bold text-ink sm:text-[18px]">
             COMPARE PRICES: {featured?.name.toUpperCase()}{" "}
@@ -91,7 +103,10 @@ export default function ComparePrices() {
           </span>
         </div>
 
-        {/* Fades on every rotation; desktop table + mobile cards share the fade */}
+        <div className="mb-4">
+          <DosageTabs value={selectedDosage} onChange={setSelectedDosage} />
+        </div>
+
         <div
           className="transition-opacity ease-in-out"
           style={{
@@ -99,7 +114,6 @@ export default function ComparePrices() {
             transitionDuration: `${FADE_MS}ms`,
           }}
         >
-          {/* Desktop / tablet: full table */}
           <div className="hidden overflow-x-auto md:block">
             <table className="w-full border-collapse">
               <thead>
@@ -114,19 +128,24 @@ export default function ComparePrices() {
                 </tr>
               </thead>
               <tbody className="text-[13.5px]">
-                {vendors?.map((row) => {
+                {rows.map((row) => {
+                  const isBestValue = row._id === bestValueId;
                   return (
                     <tr
                       key={`${row._id}`}
-                      className={`border-b border-slate-100 last:border-0 ${false ? "bg-brand-50/50" : ""}`}
+                      className={`border-b border-slate-100 last:border-0 ${
+                        isBestValue
+                          ? "border-l-4 border-l-brand-400 bg-brand-50/40"
+                          : ""
+                      }`}
                     >
                       <td className="py-4 pr-3">
                         <div className="flex items-center gap-2.5">
-                          <IconMaker name={row.name} />
+                          <IconMaker name={row.name} className="h-9 w-9" />
                           <span className="font-semibold text-ink">
                             {row.name}
                           </span>
-                          {false && (
+                          {isBestValue && (
                             <span className="rounded bg-brand-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand-700">
                               Best Value
                             </span>
@@ -145,9 +164,7 @@ export default function ComparePrices() {
                           <span className="text-slate-300">—</span>
                         )}
                       </td>
-                      <td
-                        className={`py-4 pr-3 text-[15px] font-bold text-ink`}
-                      >
+                      <td className="py-4 pr-3 text-[15px] font-bold text-ink">
                         {money(row.total_price)}
                       </td>
                       <td className="py-4 pr-3 font-semibold text-slate-700">
@@ -189,18 +206,28 @@ export default function ComparePrices() {
             </table>
           </div>
 
-          {/* Mobile: stacked cards (no horizontal scroll) */}
           <div className="space-y-3 md:hidden">
-            {vendors?.map((row) => {
+            {rows.map((row) => {
+              const isBestValue = row._id === bestValueId;
               return (
-                <div key={`${row._id}`} className={`rounded-xl border p-3.5 `}>
-                  {/* Top: vendor + best badge */}
+                <div
+                  key={`${row._id}`}
+                  className={`rounded-xl border p-3.5 ${
+                    isBestValue
+                      ? "border-brand-300 bg-brand-50/50"
+                      : "border-slate-100 bg-white"
+                  }`}
+                >
                   <div className="flex items-center gap-2.5">
-                    <IconMaker name={row.name} />
+                    <IconMaker name={row.name} className="h-9 w-9" />
                     <span className="font-semibold text-ink">{row.name}</span>
+                    {isBestValue && (
+                      <span className="rounded bg-brand-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand-700">
+                        Best Value
+                      </span>
+                    )}
                   </div>
 
-                  {/* Middle: price + rating + stock */}
                   <div className="mt-3 flex flex-wrap items-end justify-between gap-3">
                     <div>
                       <div className="text-[18px] font-bold text-ink">
@@ -233,15 +260,14 @@ export default function ComparePrices() {
                       {row.payment_methods?.length ? (
                         <div className="mt-2 flex justify-end">
                           <PaymentMethodIcons
-                          methods={row.payment_methods}
-                          variant="compact"
-                        />
+                            methods={row.payment_methods}
+                            variant="compact"
+                          />
                         </div>
                       ) : null}
                     </div>
                   </div>
 
-                  {/* Bottom: full-width visit button */}
                   <Link
                     to={visitTo}
                     className="mt-3 flex items-center justify-center gap-1.5 rounded-lg bg-brand-600 px-3.5 py-2.5 text-[13px] font-semibold text-white transition-colors hover:bg-brand-700"

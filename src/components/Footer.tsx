@@ -35,7 +35,8 @@ export default function Footer() {
           <div className="col-span-2 lg:col-span-1">
             <Logo variant="light" />
             <p className="mt-4 max-w-xs text-[14px] leading-relaxed text-slate-400">
-              The independent platform for comparing research peptide prices, vendors, and coupons.
+              The Research Peptide Resource Center. Compare vendors. Discover research.
+              Verify quality. Save money.
             </p>
           </div>
 

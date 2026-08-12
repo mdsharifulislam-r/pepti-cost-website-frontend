@@ -17,6 +17,13 @@ import { type ComparePeptide } from "../data/compare";
 import { useGetPeptidesQuery } from "../store/features/peptideSlice";
 import { useGetVendorItemsQuery } from "../store/features/vendorSlice";
 import IconMaker from "../helpers/iconMaker";
+import DosageTabs from "../components/DosageTabs";
+import {
+  filterRowsByDosage,
+  getBestValueVendorId,
+  sortVendorRows,
+  type DosageMg,
+} from "../helpers/compareUtils";
 import {
   PaymentMethodIcons,
   vendorInStock,
@@ -370,6 +377,7 @@ function ComparisonTable({
   onVisit: (info: VisitInfo) => void;
 }) {
   const [sortKey, setSortKey] = useState<SortKey>("price");
+  const [selectedDosage, setSelectedDosage] = useState<DosageMg>(10);
   const [page, setPage] = useState(1);
 
   const {
@@ -383,12 +391,16 @@ function ComparisonTable({
     searchTerm: searchTerm,
   });
 
-  // Reset to page 1 whenever the peptide or the search filter changes
+  // Reset to page 1 whenever the peptide, search filter, or dosage changes
   useEffect(() => {
     setPage(1);
-  }, [peptideId, searchTerm]);
+  }, [peptideId, searchTerm, selectedDosage]);
 
-  const rows = peptideItems?.data ?? [];
+  const rows = sortVendorRows(
+    filterRowsByDosage(peptideItems?.data ?? [], selectedDosage),
+    sortKey,
+  );
+  const bestValueId = getBestValueVendorId(rows);
   const pagination = peptideItems?.pagination;
   const isPageLoading = isLoading || isFetching;
 
@@ -404,9 +416,12 @@ function ComparisonTable({
         <h2 className="text-[15px] font-bold text-ink sm:text-[18px]">
           COMPARE PRICES: {peptide.name.toUpperCase()}
         </h2>
-        <span className="rounded-full bg-brand-50 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-brand-700">
-          {peptide?.category}
-        </span>
+        <div className="flex flex-wrap items-center gap-3">
+          <DosageTabs value={selectedDosage} onChange={setSelectedDosage} />
+          <span className="rounded-full bg-brand-50 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-brand-700">
+            {peptide?.category}
+          </span>
+        </div>
       </div>
 
       {/* Desktop: full table (fits without scroll from lg up) */}
@@ -475,20 +490,30 @@ function ComparisonTable({
                   <VendorRowSkeleton key={`row-skeleton-${i}`} />
                 ))
               : rows.map((row) => {
+                  const isBestValue = row._id === bestValueId;
                   return (
                     <tr
                       key={`${row._id}-${row.peptide}`}
-                      className="border-b border-slate-100 last:border-0 transition-colors hover:bg-slate-50/70"
+                      className={`border-b border-slate-100 last:border-0 transition-colors hover:bg-slate-50/70 ${
+                        isBestValue
+                          ? "border-l-4 border-l-brand-400 bg-brand-50/40"
+                          : ""
+                      }`}
                     >
                       {/* Supplier */}
                       <td className="align-middle py-4 pl-6 pr-3">
                         <div className="flex items-center gap-3">
-                          <IconMaker name={row.name} />
+                          <IconMaker name={row.name} className="h-9 w-9" />
                           <div>
                             <div className="flex items-center gap-1.5">
                               <span className="font-bold text-ink">
                                 {row.name}
                               </span>
+                              {isBestValue && (
+                                <span className="rounded bg-brand-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand-700">
+                                  Best Value
+                                </span>
+                              )}
                             </div>
                             {row.rating != null && (
                               <div className="mt-0.5 flex items-center gap-1">
@@ -618,6 +643,10 @@ function ComparisonTable({
 
       {/* Mobile / tablet: stacked cards (no horizontal scroll) */}
       <div className="lg:hidden">
+        <div className="space-y-3 px-4 pb-3 sm:px-6">
+          <DosageTabs value={selectedDosage} onChange={setSelectedDosage} />
+        </div>
+
         {/* Sort control */}
         <div className="flex items-center gap-2 px-4 pb-3 sm:px-6">
           <span className="text-[12px] font-semibold uppercase tracking-wide text-slate-400">
@@ -653,17 +682,27 @@ function ComparisonTable({
                 <VendorCardSkeleton key={`card-skeleton-${i}`} />
               ))
             : rows.map((row) => {
+                const isBestValue = row._id === bestValueId;
                 return (
                   <div
-                    key={`${row.name}-${row.quality}`}
-                    className={`rounded-xl border p-3.5 border-slate-100 bg-white`}
+                    key={`${row._id}-${row.quality}`}
+                    className={`rounded-xl border p-3.5 ${
+                      isBestValue
+                        ? "border-brand-300 bg-brand-50/50"
+                        : "border-slate-100 bg-white"
+                    }`}
                   >
                     {/* Top: supplier */}
                     <div className="flex items-start gap-3">
-                      <IconMaker name={row.name} />
+                      <IconMaker name={row.name} className="h-9 w-9" />
                       <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-center gap-1.5">
                           <span className="font-bold text-ink">{row.name}</span>
+                          {isBestValue && (
+                            <span className="rounded bg-brand-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand-700">
+                              Best Value
+                            </span>
+                          )}
                           {row.quality ? (
                             <span className="inline-flex items-center gap-1 rounded-full bg-brand-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand-700">
                               <BadgeCheck className="h-3 w-3" />

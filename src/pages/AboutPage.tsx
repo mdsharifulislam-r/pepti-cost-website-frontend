@@ -89,12 +89,26 @@ export default function AboutPage() {
       {/* Mission */}
       <section className="mx-auto max-w-3xl px-4 py-14 text-center sm:px-6">
         <h2 className="text-[26px] font-extrabold text-ink">Our mission</h2>
-        <p className="mt-4 text-[16px] leading-relaxed text-slate-600">
-          Buying research peptides used to mean juggling a dozen browser tabs, hunting for working coupon
-          codes, and second-guessing whether a vendor was legit. We built PeptiCenter to fix that. By
-          gathering every vendor's pricing in one transparent place — and ranking purely on value — we put
-          researchers back in control. No sponsored rankings, no hidden fees, no nonsense.
-        </p>
+        <div className="mt-4 space-y-4 text-[16px] leading-relaxed text-slate-600">
+          <p>
+            Researching peptides shouldn&apos;t require juggling dozens of browser tabs,
+            hunting for coupon codes, or wondering whether a vendor&apos;s testing can be
+            trusted. We built PeptiCenter to bring everything together in one independent
+            platform—transparent price comparisons, laboratory qualification standards,
+            educational resources, and powerful research tools that help researchers make
+            informed decisions with confidence.
+          </p>
+          <p>
+            Unlike directories that list every supplier, only vendors meeting
+            PeptiCenter&apos;s minimum laboratory qualification criteria are eligible for
+            inclusion in our directory. Our goal is to promote transparency, reward
+            quality, and make reliable research peptide information easier to access.
+          </p>
+          <p>
+            At PeptiCenter, we believe researchers deserve more than the lowest price—they
+            deserve the information needed to choose with confidence.
+          </p>
+        </div>
       </section>
 
       {/* How it works */}
