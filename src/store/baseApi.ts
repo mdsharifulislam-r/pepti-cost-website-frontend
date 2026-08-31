@@ -2,7 +2,9 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { getFromLocalStorage } from '../lib/utils'
 
-export const API_BASE_URL = 'http://72.61.146.46:5003'
+// export const API_BASE_URL = 'http://72.61.146.46:5003'
+export const API_BASE_URL = 'https://api.pepticenter.com'
+
 const token = getFromLocalStorage('accessToken')
 
 export const api = createApi({
