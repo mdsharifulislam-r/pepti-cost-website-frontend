@@ -13,6 +13,7 @@ import PrivacyPage from './pages/PrivacyPage'
 import TermsPage from './pages/TermsPage'
 import ContactPage from './pages/ContactPage'
 import VendorApplyPage from './pages/VendorApplyPage'
+import CalculatorPage from './pages/CalculatorPage'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -41,6 +42,7 @@ export default function App() {
             <Route path="/terms" element={<TermsPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/vendor-apply" element={<VendorApplyPage />} />
+            <Route path="/calculator" element={<CalculatorPage />} />
           </Routes>
         </main>
         <Footer />

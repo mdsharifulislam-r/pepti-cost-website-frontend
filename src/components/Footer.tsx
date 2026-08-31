@@ -9,6 +9,7 @@ const columns: { title: string; links: FooterLink[] }[] = [
     title: 'RESOURCES',
     links: [
       { label: 'Blog', to: '/blog' },
+      { label: 'Calculator', to: '/calculator' },
       { label: 'FAQ', to: '/faq' },
       { label: 'About Us', to: '/about' },
       { label: 'Apply as Vendor', to: '/vendor-apply' },
