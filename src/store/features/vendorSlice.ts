@@ -12,7 +12,7 @@ const vendorSlice = api.injectEndpoints({
                 params
             }),
         }),
-        getVendorItems: builder.query<ApiResponse<IVendorItem[]>, { peptide?: string, page?: number, limit?: number, searchTerm?: string }>({
+        getVendorItems: builder.query<ApiResponse<IVendorItem[]>, { peptide?: string, page?: number, limit?: number, searchTerm?: string, unit: string }>({
             query: (params) => ({
                 method: "GET",
                 url: "/vendor",

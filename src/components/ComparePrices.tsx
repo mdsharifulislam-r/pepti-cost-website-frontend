@@ -75,12 +75,16 @@ export default function ComparePrices() {
   const { data: vendorsData } = useGetVendorItemsQuery(
     {
       peptide: featured?._id!,
+      unit: selectedDosage.toString(),
     },
     { skip: !featured?._id },
   );
 
   const rows = useMemo(() => {
-    const filtered = filterRowsByDosage(vendorsData?.data ?? [], selectedDosage);
+    const filtered = filterRowsByDosage(
+      vendorsData?.data ?? [],
+      selectedDosage,
+    );
     return sortVendorRows(filtered, "priceMg");
   }, [vendorsData?.data, selectedDosage]);
 

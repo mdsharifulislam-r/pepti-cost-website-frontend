@@ -18,12 +18,7 @@ import { useGetPeptidesQuery } from "../store/features/peptideSlice";
 import { useGetVendorItemsQuery } from "../store/features/vendorSlice";
 import IconMaker from "../helpers/iconMaker";
 import DosageTabs from "../components/DosageTabs";
-import {
-  filterRowsByDosage,
-  getBestValueVendorId,
-  sortVendorRows,
-  type DosageMg,
-} from "../helpers/compareUtils";
+import { getBestValueVendorId, type DosageMg } from "../helpers/compareUtils";
 import {
   PaymentMethodIcons,
   vendorInStock,
@@ -389,6 +384,7 @@ function ComparisonTable({
     page,
     limit: PAGE_LIMIT,
     searchTerm: searchTerm,
+    unit: selectedDosage.toString(),
   });
 
   // Reset to page 1 whenever the peptide, search filter, or dosage changes
@@ -396,10 +392,7 @@ function ComparisonTable({
     setPage(1);
   }, [peptideId, searchTerm, selectedDosage]);
 
-  const rows = sortVendorRows(
-    filterRowsByDosage(peptideItems?.data ?? [], selectedDosage),
-    sortKey,
-  );
+  const rows = peptideItems?.data || [];
   const bestValueId = getBestValueVendorId(rows);
   const pagination = peptideItems?.pagination;
   const isPageLoading = isLoading || isFetching;
@@ -481,7 +474,9 @@ function ComparisonTable({
                   Payment <ChevronsUpDown className="h-3.5 w-3.5 opacity-70" />
                 </span>
               </th>
-              <th className="w-[110px] py-3.5 pr-6 text-right font-bold">Visit</th>
+              <th className="w-[110px] py-3.5 pr-6 text-right font-bold">
+                Visit
+              </th>
             </tr>
           </thead>
           <tbody className="text-[13.5px]">
@@ -753,7 +748,8 @@ function ComparisonTable({
                     </div>
 
                     {/* Delivery + payment */}
-                    {(row.delivery_cost != null || row.payment_methods?.length) && (
+                    {(row.delivery_cost != null ||
+                      row.payment_methods?.length) && (
                       <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
                         {row.delivery_cost != null ? (
                           <div className="text-[12px] text-slate-500">
@@ -834,7 +830,7 @@ export default function ComparePage() {
   const [query, setQuery] = useState(searchParams.get("q") ?? "");
   const [medicine, setMedicine] = useState("All");
   const [visit, setVisit] = useState<VisitInfo | null>(null);
-
+  console.log(visit, medicine);
   const { data: peptideData } = useGetPeptidesQuery();
   const peptides = peptideData?.data || [];
   const filteredPeptides = peptides.filter((p) =>
