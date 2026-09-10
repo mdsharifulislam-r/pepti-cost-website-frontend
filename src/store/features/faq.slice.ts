@@ -11,7 +11,10 @@ const faqSlice = api.injectEndpoints({
             }),
         }),
 
-        getDisclaimer: builder.query<ApiResponse<{ content: string }>, { type: string }>({
+        getDisclaimer: builder.query<
+            ApiResponse<{ content: string; updatedAt?: string; type?: string }>,
+            { type: string }
+        >({
             query: (params) => ({
                 url: "/disclaimer",
                 method: "GET",
