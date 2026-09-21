@@ -398,7 +398,7 @@ function ComparisonTable({
   const isPageLoading = isLoading || isFetching;
 
   // Nothing to show — only bail once we're sure (not while still loading)
-  if (!isPageLoading && !rows.length) {
+  if (!isPageLoading && !rows.length && !selectedDosage) {
     return <></>;
   }
 
