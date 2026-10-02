@@ -1,7 +1,4 @@
-import { imageUrl } from "../store/baseApi";
-
-
-
+import { API_BASE_URL, imageUrl } from "../store/baseApi";
 
 // Simple formatter for currency
 export function formatCurrency(amount: number) {
@@ -28,6 +25,13 @@ export const getFromLocalStorage = (key: string) => {
 export function getImageUrl(path: string = '') {
 
   return path.startsWith("http") ? path : path.startsWith("/asset") ? imageUrl.replace("/files", "") + path : imageUrl + path
+}
+
+export function getPdfUrl(path: string = '') {
+  if (!path) return '';
+  if (path.startsWith('http')) return path;
+
+  return `${API_BASE_URL}/files${path.startsWith('/') ? path : `/${path}`}`;
 }
 
 

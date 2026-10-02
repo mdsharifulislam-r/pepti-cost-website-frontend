@@ -8,6 +8,7 @@ type NavItem = { label: string; to: string }
 const navLinks: NavItem[] = [
   { label: 'Vendors', to: '/vendors' },
   { label: 'Calculator', to: '/calculator' },
+  { label: 'Library', to: '/library' },
   { label: 'Blog', to: '/blog' },
   { label: 'About', to: '/about' },
   { label: 'Contact', to: '/contact' },

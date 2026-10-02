@@ -5,6 +5,8 @@ import Footer from './components/Footer'
 import HomePage from './pages/HomePage'
 import BlogPage from './pages/BlogPage'
 import BlogDetailPage from './pages/BlogDetailPage'
+import LibraryPage from './pages/LibraryPage'
+import LibraryDetailPage from './pages/LibraryDetailPage'
 import ComparePage from './pages/ComparePage'
 import VendorsPage from './pages/VendorsPage'
 import AboutPage from './pages/AboutPage'
@@ -34,6 +36,8 @@ export default function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/blog" element={<BlogPage />} />
             <Route path="/blog/:id" element={<BlogDetailPage />} />
+            <Route path="/library" element={<LibraryPage />} />
+            <Route path="/library/:id" element={<LibraryDetailPage />} />
             <Route path="/compare" element={<ComparePage />} />
             <Route path="/vendors" element={<VendorsPage />} />
             <Route path="/about" element={<AboutPage />} />
