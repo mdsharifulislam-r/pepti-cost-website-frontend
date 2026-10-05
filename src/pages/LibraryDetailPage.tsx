@@ -67,11 +67,11 @@ export default function LibraryDetailPage() {
           The resource you’re looking for doesn’t exist or is no longer available.
         </p>
         <Link
-          to="/library"
+          to="/peptipedia"
           className="mt-6 inline-flex items-center gap-2 rounded-lg bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-700"
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to Library
+          Back to PeptiPedia
         </Link>
       </div>
     );
@@ -85,8 +85,8 @@ export default function LibraryDetailPage() {
             Home
           </Link>
           <span className="text-slate-300">/</span>
-          <Link to="/library" className="hover:text-brand-600">
-            Library
+          <Link to="/peptipedia" className="hover:text-brand-600">
+            PeptiPedia
           </Link>
           <span className="text-slate-300">/</span>
           <span className="text-slate-700">{item.category || "Resource"}</span>
@@ -95,7 +95,7 @@ export default function LibraryDetailPage() {
 
       <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
         <Link
-          to="/library"
+          to="/peptipedia"
           className="inline-flex items-center gap-1.5 text-[14px] font-semibold text-brand-600 transition-colors hover:text-brand-700"
         >
           <ArrowLeft className="h-4 w-4" />

@@ -31,8 +31,8 @@ const pageMeta: Record<string, { title: string; description: string }> = {
     description:
       'Compare research peptide prices, browse trusted vendors, and discover useful peptide resources with PeptiCenter.',
   },
-  '/library': {
-    title: 'Peptide Library | PeptiCenter',
+  '/peptipedia': {
+    title: 'PeptiPedia | PeptiCenter',
     description: 'Explore the PeptiCenter peptide library for research resources, guides, and informational content.',
   },
   '/compare': {
@@ -120,8 +120,8 @@ export default function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/blog" element={<BlogPage />} />
             <Route path="/blog/:id" element={<BlogDetailPage />} />
-            <Route path="/library" element={<LibraryPage />} />
-            <Route path="/library/:id" element={<LibraryDetailPage />} />
+            <Route path="/peptipedia" element={<LibraryPage />} />
+            <Route path="/peptipedia/:id" element={<LibraryDetailPage />} />
             <Route path="/compare" element={<ComparePage />} />
             <Route path="/vendors" element={<VendorsPage />} />
             <Route path="/about" element={<AboutPage />} />

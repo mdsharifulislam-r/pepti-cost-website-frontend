@@ -114,11 +114,11 @@ export default function LibraryPage() {
                 <article
                   key={item._id}
                   className="group flex h-full cursor-pointer flex-col rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition-colors hover:border-slate-300 hover:bg-slate-50"
-                  onClick={() => navigate(`/library/${item._id}`)}
+                  onClick={() => navigate(`/peptipedia/${item._id}`)}
                   onKeyDown={(event) => {
                     if (event.key === "Enter" || event.key === " ") {
                       event.preventDefault();
-                      navigate(`/library/${item._id}`);
+                      navigate(`/peptipedia/${item._id}`);
                     }
                   }}
                   role="link"
