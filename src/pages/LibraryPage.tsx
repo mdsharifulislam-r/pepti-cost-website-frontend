@@ -68,7 +68,7 @@ export default function LibraryPage() {
         <div className="relative mx-auto max-w-7xl px-4 py-14 text-center sm:px-6">
           <div className="inline-flex items-center gap-2 rounded-full border border-brand-200 bg-brand-50 px-3.5 py-1.5 text-[13px] font-semibold text-brand-700 shadow-sm">
             <BookOpenText className="h-4 w-4 text-brand-600" />
-            Library
+            PeptiPedia
           </div>
           <h1 className="mt-5 text-[28px] font-extrabold leading-tight tracking-tight text-ink sm:text-[36px] lg:text-[44px]">
             Explore peptide research and practical
